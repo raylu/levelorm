@@ -1,2 +1,4 @@
 __pycache__/
-tests/testdb/
+/levelorm.egg-info/
+/tests/testdb/
+/.coverage
