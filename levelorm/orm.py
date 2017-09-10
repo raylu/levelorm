@@ -110,10 +110,20 @@ class BaseModel(metaclass=OrderedClass):
 		return cls(**kwargs)
 
 	@classmethod
-	def iter(cls):
-		with cls.db.iterator() as it:
-			for key, data in it:
-				yield cls.parse(key.decode('utf-8'), data)
+	def iter(cls, **kwargs):
+		if 'start' in kwargs:
+			kwargs['start'] = kwargs['start'].encode('utf-8')
+		if 'stop' in kwargs:
+			kwargs['stop'] = kwargs['stop'].encode('utf-8')
+
+		if kwargs.get('include_value', True):
+			with cls.db.iterator(**kwargs) as it:
+				for key, data in it:
+					yield cls.parse(key.decode('utf-8'), data)
+		else:
+			with cls.db.iterator(**kwargs) as it:
+				for key in it:
+					yield key.decode('utf-8')
 
 def db_base_model(db):
 	def __init_subclass__(cls):

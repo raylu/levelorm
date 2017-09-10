@@ -31,9 +31,18 @@ class TestLevelORM(unittest.TestCase):
 		assert before.otomotopeia == after.otomotopeia == 'moo'
 		assert before.shouts == after.shouts == True
 
+		dog = Animal('dog', 'woof', False)
+		dog.save()
 		animals = list(Animal.iter())
-		assert len(animals) == 1
+		assert len(animals) == 2
 		assert animals[0] == before
+		assert animals[1] == dog
+
+		animal_keys = list(Animal.iter(include_value=False))
+		assert animal_keys == ['cow', 'dog']
+
+		dog_after = list(Animal.iter(start='dog'))[0]
+		assert dog == dog_after
 
 	def test_str(self):
 		a = Animal('sheep', 'baa', False)
