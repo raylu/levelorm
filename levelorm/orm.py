@@ -48,6 +48,7 @@ class OrderedClass(type):
 
 class BaseModel(metaclass=OrderedClass):
 	db = None
+	prefix = None
 
 	def __init__(self, *args, **kwargs):
 		num_args = len(args) + len(kwargs)
@@ -82,6 +83,16 @@ class BaseModel(metaclass=OrderedClass):
 		args = map(lambda kv: '%s=%r' % kv, self.__dict__.items())
 		return '%s(%s)' % (self.__class__.__name__, ', '.join(args))
 
+	def __eq__(self, other):
+		try:
+			for fieldname in self._fields:
+				value = getattr(self, fieldname)
+				if value != getattr(other, fieldname):
+					return False
+		except AttributeError:
+			return False
+		return True
+
 	@classmethod
 	def get(cls, key):
 		data = cls.db.get(key.encode('utf-8'))
@@ -98,8 +109,16 @@ class BaseModel(metaclass=OrderedClass):
 		kwargs[cls._keyname] = key
 		return cls(**kwargs)
 
+	@classmethod
+	def iter(cls):
+		with cls.db.iterator() as it:
+			for key, data in it:
+				yield cls.parse(key.decode('utf-8'), data)
+
 def db_base_model(db):
 	def __init_subclass__(cls):
-		cls.db = db
+		if not cls.prefix:
+			raise Exception('models must have prefixes')
+		cls.db = db.prefixed_db(('%s-' % cls.prefix).encode('utf-8'))
 	base_model = type('DBBaseModel', (BaseModel,), {'__init_subclass__': __init_subclass__})
 	return base_model

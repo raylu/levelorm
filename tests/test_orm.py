@@ -17,6 +17,7 @@ def tearDownModule():
 	shutil.rmtree(dbpath)
 
 class Animal(DBBaseModel):
+	prefix = 'animal'
 	name = String(key=True)
 	otomotopeia = String()
 	shouts = Boolean()
@@ -29,3 +30,15 @@ class TestLevelORM(unittest.TestCase):
 		assert before.name == after.name == 'cow'
 		assert before.otomotopeia == after.otomotopeia == 'moo'
 		assert before.shouts == after.shouts == True
+
+		animals = list(Animal.iter())
+		assert len(animals) == 1
+		assert animals[0] == before
+
+	def test_str(self):
+		a = Animal('sheep', 'baa', False)
+		assert str(a) == "Animal(name='sheep', otomotopeia='baa', shouts=False, _key='sheep')"
+
+	def test_eq(self):
+		a = Animal('dog', 'woof', False)
+		assert a != 1
