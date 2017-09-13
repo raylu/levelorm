@@ -79,8 +79,10 @@ class BaseModel(metaclass=OrderedClass):
 		data = self._struct.pack(*nonstring_values) + b'\0'.join(string_values)
 		self.db.put(self._key.encode('utf-8'), data)
 
-	def __str__(self):
-		args = map(lambda kv: '%s=%r' % kv, self.__dict__.items())
+	def __repr__(self):
+		args = []
+		for fieldname in self._fields:
+			args.append('%s=%r' % (fieldname, getattr(self, fieldname)))
 		return '%s(%s)' % (self.__class__.__name__, ', '.join(args))
 
 	def __eq__(self, other):

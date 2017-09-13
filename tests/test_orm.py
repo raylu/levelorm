@@ -46,7 +46,7 @@ class TestLevelORM(unittest.TestCase):
 
 	def test_str(self):
 		a = Animal('sheep', 'baa', False)
-		assert str(a) == "Animal(name='sheep', otomotopeia='baa', shouts=False, _key='sheep')"
+		assert str(a) == "Animal(name='sheep', otomotopeia='baa', shouts=False)"
 
 	def test_eq(self):
 		a = Animal('dog', 'woof', False)
