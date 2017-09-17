@@ -1,5 +1,5 @@
 import collections
-import struct
+import io
 
 from . import fields
 
@@ -18,10 +18,7 @@ class ModelMeta(type):
 		# only set _fields for subclasses of DBBaseModel
 		if len(bases) == 1 and bases[0].__name__ == 'DBBaseModel':
 			all_fields = []
-			nonstring_fields = []
-			string_fields = [] # excluding key
 			keyname = None
-			formatstr = ''
 			for name, field in namespace.items():
 				if not isinstance(field, fields.BaseField):
 					continue
@@ -32,19 +29,11 @@ class ModelMeta(type):
 					if not isinstance(field, fields.String):
 						raise Exception('keys must be Strings bug %s is %s' % (name, field.__class__))
 					keyname = name
-				elif isinstance(field, fields.String):
-					string_fields.append(name)
-				else:
-					nonstring_fields.append(name)
-					formatstr += field.formatstr
 			if keyname is None:
 				raise Exception('%s has no key' % clsname)
 
 			result._fields = tuple(all_fields)
-			result._nonstring_fields = tuple(nonstring_fields)
-			result._string_fields = tuple(string_fields)
 			result._keyname = keyname
-			result._struct = struct.Struct(formatstr)
 		return result
 
 class BaseModel(metaclass=ModelMeta):
@@ -68,17 +57,21 @@ class BaseModel(metaclass=ModelMeta):
 		self._key = getattr(self, self._keyname)
 
 	def save(self):
-		nonstring_values = []
-		string_values = []
-		for fieldname in self._nonstring_fields:
+		buf = io.BytesIO()
+		for fieldname in self._fields:
+			if fieldname == self._keyname:
+				continue
+			field = getattr(self.__class__, fieldname)
 			value = getattr(self, fieldname)
-			nonstring_values.append(value)
-		for fieldname in self._string_fields:
-			value = getattr(self, fieldname)
-			string_values.append(value.encode('utf-8'))
+			field.serialize(buf, value)
 
-		data = self._struct.pack(*nonstring_values) + b'\0'.join(string_values)
-		self.db.put(self._key.encode('utf-8'), data)
+			# alignment
+			remainder = buf.tell() % 4
+			if remainder != 0:
+				padding = 4 - remainder
+				buf.write(b'\0' * padding)
+
+		self.db.put(self._key.encode('utf-8'), buf.getvalue())
 
 	def __repr__(self):
 		args = []
@@ -105,11 +98,19 @@ class BaseModel(metaclass=ModelMeta):
 
 	@classmethod
 	def parse(cls, key, data):
-		nonstring_values = cls._struct.unpack(data[:cls._struct.size])
-		bytes_values = data[cls._struct.size:].split(b'\0')
-		string_values = tuple(map(lambda v: v.decode('utf-8'), bytes_values))
-		kwargs = dict(zip(cls._nonstring_fields + cls._string_fields, nonstring_values + string_values))
-		kwargs[cls._keyname] = key
+		buf = io.BytesIO(data)
+		kwargs = {cls._keyname: key}
+		for fieldname in cls._fields:
+			if fieldname == cls._keyname:
+				continue
+			field = getattr(cls, fieldname)
+			kwargs[fieldname] = field.deserialize(buf)
+
+			# alignment
+			remainder = buf.tell() % 4
+			if remainder != 0:
+				padding = 4 - remainder
+				buf.seek(padding, io.SEEK_CUR)
 		return cls(**kwargs)
 
 	@classmethod
