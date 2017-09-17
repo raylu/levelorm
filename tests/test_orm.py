@@ -7,7 +7,7 @@ import unittest
 import plyvel
 
 import levelorm
-from levelorm.fields import String, Boolean
+from levelorm.fields import String, Boolean, Integer, Array
 
 dbpath = path.join(path.dirname(path.abspath(__file__)), 'testdb')
 db = plyvel.DB(dbpath, create_if_missing=True)
@@ -21,6 +21,16 @@ class Animal(DBBaseModel):
 	name = String(key=True)
 	otomotopeia = String()
 	shouts = Boolean()
+
+class Numbers(DBBaseModel):
+	prefix = 'numbers'
+	name = String(key=True)
+	numbers = Array(Integer())
+
+class Matrices(DBBaseModel):
+	prefix = 'matrices'
+	name = String(key=True)
+	numbers = Array(Array(Integer()))
 
 class TestLevelORM(unittest.TestCase):
 	def test_basic(self):
@@ -51,3 +61,18 @@ class TestLevelORM(unittest.TestCase):
 	def test_eq(self):
 		a = Animal('dog', 'woof', False)
 		assert a != 1
+
+	def test_array(self):
+		fib = Numbers('fibonacci', [1, 1, 2, 3, 5, 8])
+		fib.save()
+		assert Numbers.get('fibonacci') == fib
+
+		hankel = Matrices('hankel', [
+			[1, 2, 3, 4, 5],
+			[2, 3, 4, 5, 6],
+			[3, 4, 5, 6, 7],
+			[4, 5, 6, 7, 8],
+			[5, 6, 7, 8, 9],
+		])
+		hankel.save()
+		assert Matrices.get('hankel') == hankel
