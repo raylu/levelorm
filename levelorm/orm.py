@@ -3,10 +3,11 @@ import struct
 
 from . import fields
 
-class OrderedClass(type):
+class ModelMeta(type):
 	@classmethod
 	def __prepare__(mcs, name, bases, **kwds):
 		if len(bases) == 1 and bases[0].__name__ == 'DBBaseModel':
+			# order the class's fields so we can init with positional args
 			return collections.OrderedDict()
 		else:
 			return type.__prepare__(mcs, name, bases, **kwds)
@@ -46,7 +47,7 @@ class OrderedClass(type):
 			result._struct = struct.Struct(formatstr)
 		return result
 
-class BaseModel(metaclass=OrderedClass):
+class BaseModel(metaclass=ModelMeta):
 	db = None
 	prefix = None
 
