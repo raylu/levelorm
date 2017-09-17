@@ -15,11 +15,12 @@ addons:
 
 install:
   - ./setup.py develop
-  - pip install --quiet coveralls pylint
+  - pip install --quiet coveralls pylint mypy
 
 script:
   - coverage run --source levelorm -m unittest --verbose
   - 'pylint levelorm tests *.py'
+  - mypy levelorm tests
   - ./setup.py check --strict
 
 after_success:

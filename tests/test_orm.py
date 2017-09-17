@@ -2,6 +2,7 @@
 
 from os import path
 import shutil
+import typing
 import unittest
 
 import plyvel
@@ -11,7 +12,7 @@ from levelorm.fields import String, Boolean, Integer, Array
 
 dbpath = path.join(path.dirname(path.abspath(__file__)), 'testdb')
 db = plyvel.DB(dbpath, create_if_missing=True)
-DBBaseModel = levelorm.db_base_model(db)
+DBBaseModel: typing.Any = levelorm.db_base_model(db)
 
 def tearDownModule():
 	shutil.rmtree(dbpath)
@@ -31,6 +32,11 @@ class Matrices(DBBaseModel):
 	prefix = 'matrices'
 	name = String(key=True)
 	numbers = Array(Array(Integer()))
+
+class TodoList(DBBaseModel):
+	prefix = 'todo'
+	name = String(key=True)
+	numbers = Array(String())
 
 class TestLevelORM(unittest.TestCase):
 	def test_basic(self):
@@ -76,3 +82,7 @@ class TestLevelORM(unittest.TestCase):
 		])
 		hankel.save()
 		assert Matrices.get('hankel') == hankel
+
+		todo1 = TodoList('1', ['wash the dishes', 'charm snakes'])
+		todo1.save()
+		assert TodoList.get('1') == todo1

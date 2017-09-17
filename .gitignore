@@ -5,3 +5,4 @@ __pycache__/
 
 /tests/testdb/
 /.coverage
+/.mypy_cache/

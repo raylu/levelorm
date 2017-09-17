@@ -1,5 +1,8 @@
 import collections
 import io
+from typing import Iterator, List, Type, TypeVar, Union
+
+import plyvel
 
 from . import fields
 
@@ -36,11 +39,16 @@ class ModelMeta(type):
 			result._keyname = keyname
 		return result
 
-class BaseModel(metaclass=ModelMeta):
-	db = None
-	prefix = None
+Model = TypeVar('Model', bound='BaseModel')
 
-	def __init__(self, *args, **kwargs):
+class BaseModel(metaclass=ModelMeta):
+	db: plyvel.DB = None
+	prefix: str = None
+
+	_keyname: str
+	_fields: List[str]
+
+	def __init__(self, *args, **kwargs) -> None:
 		num_args = len(args) + len(kwargs)
 		if num_args != len(self._fields):
 			raise TypeError('%s has %d fields but %d arguments were given' %
@@ -56,7 +64,7 @@ class BaseModel(metaclass=ModelMeta):
 
 		self._key = getattr(self, self._keyname)
 
-	def save(self):
+	def save(self) -> None:
 		buf = io.BytesIO()
 		for fieldname in self._fields:
 			if fieldname == self._keyname:
@@ -73,7 +81,7 @@ class BaseModel(metaclass=ModelMeta):
 
 		self.db.put(self._key.encode('utf-8'), buf.getvalue())
 
-	def __repr__(self):
+	def __repr__(self) -> str:
 		args = []
 		for fieldname in self._fields:
 			args.append('%s=%r' % (fieldname, getattr(self, fieldname)))
@@ -90,14 +98,14 @@ class BaseModel(metaclass=ModelMeta):
 		return True
 
 	@classmethod
-	def get(cls, key):
+	def get(cls: Type[Model], key: str) -> Model:
 		data = cls.db.get(key.encode('utf-8'))
 		if data is None:
 			return None
 		return cls.parse(key, data)
 
 	@classmethod
-	def parse(cls, key, data):
+	def parse(cls: Type[Model], key: str, data: bytes) -> Model:
 		buf = io.BytesIO(data)
 		kwargs = {cls._keyname: key}
 		for fieldname in cls._fields:
@@ -114,7 +122,7 @@ class BaseModel(metaclass=ModelMeta):
 		return cls(**kwargs)
 
 	@classmethod
-	def iter(cls, **kwargs):
+	def iter(cls: Type[Model], **kwargs) -> Iterator[Union[Model, str]]:
 		if 'start' in kwargs:
 			kwargs['start'] = kwargs['start'].encode('utf-8')
 		if 'stop' in kwargs:
@@ -129,7 +137,7 @@ class BaseModel(metaclass=ModelMeta):
 				for key in it:
 					yield key.decode('utf-8')
 
-def db_base_model(db):
+def db_base_model(db: plyvel.DB) -> Type[BaseModel]:
 	def __init_subclass__(cls):
 		if not cls.prefix:
 			raise Exception('models must have prefixes')
