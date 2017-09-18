@@ -1,0 +1,7 @@
+# https://docs.readthedocs.io/en/latest/yaml-config.html
+
+python:
+    version: 3.6
+
+formats:
+    - none
