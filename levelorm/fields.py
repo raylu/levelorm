@@ -15,6 +15,13 @@ class BaseField(metaclass=abc.ABCMeta):
 		raise NotImplementedError
 
 class String(BaseField):
+	'''
+	represents a :class:`str`. stored as an unsigned 4-byte length and encoded bytes
+
+	every model must have exactly one :class:`String` with ``key=True`` which will
+	not be included in the value and instead used as the key
+	'''
+
 	length_struct = struct.Struct('I')
 
 	def __init__(self, encoding: str = 'utf-8', key=False) -> None:
@@ -31,6 +38,11 @@ class String(BaseField):
 		return b.decode(self.encoding)
 
 class Boolean(BaseField):
+	'''
+	represents a :class:`bool`.
+	stored as 1 byte (but :meth:`levelorm.orm.BaseModel.save` will pad to 4)
+	'''
+
 	struct = struct.Struct('?')
 
 	def serialize(self, buf, value: bool):
@@ -40,6 +52,11 @@ class Boolean(BaseField):
 		return self.struct.unpack(buf.read(self.struct.size))[0]
 
 class Integer(BaseField):
+	'''
+	represents an :class:`int`.
+	stored as a signed 4-byte int
+	'''
+
 	struct = struct.Struct('i')
 
 	def serialize(self, buf, value: int):
@@ -49,6 +66,19 @@ class Integer(BaseField):
 		return self.struct.unpack(buf.read(self.struct.size))[0]
 
 class Array(BaseField):
+	'''
+	represents a :class:`list`.
+	stored as an unsigned 4-byte length and however the inner class is serialized
+
+	usage example: ::
+
+		class Matrices(DBBaseModel):
+			prefix = 'matrix'
+			name = String(key=True)
+			numbers = Array(Array(Integer()))
+		identity = Matrices('identity', [[1, 0], [0, 1]])
+	'''
+
 	length_struct = struct.Struct('I')
 
 	def __init__(self, inner: BaseField, key=False) -> None:

@@ -37,11 +37,11 @@ this outputs::
     [Animal(name='cow', onomatopoeia='moo', shouts=True)]
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    levelorm
-    orm
-    fields
+   levelorm
+   orm
+   fields
 
 indices and tables
 ==================

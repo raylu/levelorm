@@ -42,6 +42,11 @@ class ModelMeta(type):
 Model = TypeVar('Model', bound='BaseModel')
 
 class BaseModel(metaclass=ModelMeta):
+	'''
+	base model for ``DBBaseModel`` to inherit from.
+	user models should inherit from a class created by :meth:`levelorm.db_base_model`
+	'''
+
 	db: plyvel.DB = None
 	prefix: str = None
 
@@ -65,6 +70,10 @@ class BaseModel(metaclass=ModelMeta):
 		self._key = getattr(self, self._keyname)
 
 	def save(self) -> None:
+		'''
+		writes this instance to the :attr:`db`.
+		members are serialized in the order they are defined on the model and are 4-byte aligned
+		'''
 		buf = io.BytesIO()
 		for fieldname in self._fields:
 			if fieldname == self._keyname:
@@ -100,6 +109,7 @@ class BaseModel(metaclass=ModelMeta):
 
 	@classmethod
 	def get(cls: Type[Model], key: str) -> Model:
+		''' return an instance of the model by querying :attr:`db` and parsing the result '''
 		keyfield = getattr(cls, cls._keyname)
 		data = cls.db.get(key.encode(keyfield.encoding))
 		if data is None:
@@ -108,6 +118,7 @@ class BaseModel(metaclass=ModelMeta):
 
 	@classmethod
 	def parse(cls: Type[Model], key: str, data: bytes) -> Model:
+		''' used internally by :meth:`get` and :meth:`iter` to deserialize values '''
 		buf = io.BytesIO(data)
 		kwargs = {cls._keyname: key}
 		for fieldname in cls._fields:
@@ -125,6 +136,10 @@ class BaseModel(metaclass=ModelMeta):
 
 	@classmethod
 	def iter(cls: Type[Model], **kwargs) -> Iterator[Union[Model, str]]:
+		'''
+		proxies to `plyvel.DB.iterator <https://plyvel.readthedocs.io/en/latest/api.html#iterator>`_
+		but yields ``(str, BaseModel)`` pairs instead of ``(bytes, bytes)``
+		'''
 		keyfield = getattr(cls, cls._keyname)
 		if 'start' in kwargs:
 			kwargs['start'] = kwargs['start'].encode(keyfield.encoding)
@@ -141,6 +156,10 @@ class BaseModel(metaclass=ModelMeta):
 					yield key.decode(keyfield.encoding)
 
 def db_base_model(db: plyvel.DB) -> Type[BaseModel]:
+	'''
+	create a base model class that all user models should inherit from.
+	the returned base class holds a reference to the ``plyvel.DB``
+	'''
 	def __init_subclass__(cls):
 		if not cls.prefix:
 			raise Exception('models must have prefixes')

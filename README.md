@@ -2,6 +2,8 @@
 
 a python 3.6+ ORM for [leveldb](http://leveldb.org) using [plyvel](https://plyvel.readthedocs.io/)
 
+[docs](https://raylu.github.io/levelorm/)
+
 ## basic usage
 
 ```python
@@ -34,3 +36,8 @@ print(list(Animal.iter()))
 cow says MOO
 [Animal(name='cow', onomatopoeia='moo', shouts=True)]
 ```
+
+## tests
+
+[![build](https://travis-ci.org/raylu/levelorm.svg)](https://travis-ci.org/raylu/levelorm)
+[![coverage](https://coveralls.io/repos/github/raylu/levelorm/badge.svg)](https://coveralls.io/github/raylu/levelorm)
