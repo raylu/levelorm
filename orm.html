@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>orm &mdash; levelorm 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="levelorm 0.1 documentation" href="index.html"/>
+        <link rel="next" title="fields" href="fields.html"/>
+        <link rel="prev" title="levelorm" href="levelorm.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> levelorm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="levelorm.html">levelorm</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">orm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fields.html">fields</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">levelorm</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>orm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/orm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-levelorm.orm">
+<span id="orm"></span><h1>orm<a class="headerlink" href="#module-levelorm.orm" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="levelorm.orm.BaseModel">
+<em class="property">class </em><code class="descclassname">levelorm.orm.</code><code class="descname">BaseModel</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L44"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="levelorm.orm.BaseModel.db">
+<code class="descname">db</code><em class="property"> = None</em><a class="headerlink" href="#levelorm.orm.BaseModel.db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="levelorm.orm.BaseModel.get">
+<em class="property">classmethod </em><code class="descname">get</code><span class="sig-paren">(</span><em>key: str</em><span class="sig-paren">)</span> &#x2192; Model<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L101"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="levelorm.orm.BaseModel.iter">
+<em class="property">classmethod </em><code class="descname">iter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span> &#x2192; typing.Iterator[typing.Union[~Model, str]]<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L126"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="levelorm.orm.BaseModel.parse">
+<em class="property">classmethod </em><code class="descname">parse</code><span class="sig-paren">(</span><em>key: str</em>, <em>data: bytes</em><span class="sig-paren">)</span> &#x2192; Model<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="levelorm.orm.BaseModel.prefix">
+<code class="descname">prefix</code><em class="property"> = None</em><a class="headerlink" href="#levelorm.orm.BaseModel.prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="levelorm.orm.BaseModel.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L67"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fields.html" class="btn btn-neutral float-right" title="fields" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="levelorm.html" class="btn btn-neutral" title="levelorm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
