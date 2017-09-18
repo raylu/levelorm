@@ -17,12 +17,18 @@ class BaseField(metaclass=abc.ABCMeta):
 class String(BaseField):
 	length_struct = struct.Struct('I')
 
+	def __init__(self, encoding: str = 'utf-8', key=False) -> None:
+		self.encoding = encoding
+		super().__init__(key)
+
 	def serialize(self, buf, value):
-		buf.write(self.length_struct.pack(len(value)) + value.encode('utf-8'))
+		encoded = value.encode(self.encoding)
+		buf.write(self.length_struct.pack(len(encoded)) + encoded)
 
 	def deserialize(self, buf) -> str:
 		length = self.length_struct.unpack(buf.read(self.length_struct.size))[0]
-		return buf.read(length).decode('utf-8')
+		b = buf.read(length)
+		return b.decode(self.encoding)
 
 class Boolean(BaseField):
 	struct = struct.Struct('?')

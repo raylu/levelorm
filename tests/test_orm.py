@@ -23,13 +23,18 @@ class Animal(DBBaseModel):
 	onomatopoeia = String()
 	shouts = Boolean()
 
+class JISAnimal(DBBaseModel):
+	prefix = 'jisanimal'
+	name = String(key=True, encoding='utf-16')
+	onomatopoeia = String(encoding='shift-jis')
+
 class Numbers(DBBaseModel):
 	prefix = 'numbers'
 	name = String(key=True)
 	numbers = Array(Integer())
 
 class Matrices(DBBaseModel):
-	prefix = 'matrices'
+	prefix = 'matrix'
 	name = String(key=True)
 	numbers = Array(Array(Integer()))
 
@@ -86,3 +91,15 @@ class TestLevelORM(unittest.TestCase):
 		todo1 = TodoList('1', ['wash the dishes', 'charm snakes'])
 		todo1.save()
 		assert TodoList.get('1') == todo1
+
+	def test_unicode(self):
+		牛 = Animal('牛', 'もーもー', shouts=False)
+		牛.save()
+		assert Animal.get('牛') == 牛
+
+		犬 = JISAnimal('犬', 'わんわん')
+		犬.save()
+		assert JISAnimal.get('犬') == 犬
+		animals = list(JISAnimal.iter(start='犬'))
+		assert len(animals) == 1
+		assert animals[0] == 犬

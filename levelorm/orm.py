@@ -79,7 +79,8 @@ class BaseModel(metaclass=ModelMeta):
 				padding = 4 - remainder
 				buf.write(b'\0' * padding)
 
-		self.db.put(self._key.encode('utf-8'), buf.getvalue())
+		keyfield = getattr(self.__class__, self._keyname)
+		self.db.put(self._key.encode(keyfield.encoding), buf.getvalue())
 
 	def __repr__(self) -> str:
 		args = []
@@ -99,7 +100,8 @@ class BaseModel(metaclass=ModelMeta):
 
 	@classmethod
 	def get(cls: Type[Model], key: str) -> Model:
-		data = cls.db.get(key.encode('utf-8'))
+		keyfield = getattr(cls, cls._keyname)
+		data = cls.db.get(key.encode(keyfield.encoding))
 		if data is None:
 			return None
 		return cls.parse(key, data)
@@ -123,19 +125,20 @@ class BaseModel(metaclass=ModelMeta):
 
 	@classmethod
 	def iter(cls: Type[Model], **kwargs) -> Iterator[Union[Model, str]]:
+		keyfield = getattr(cls, cls._keyname)
 		if 'start' in kwargs:
-			kwargs['start'] = kwargs['start'].encode('utf-8')
+			kwargs['start'] = kwargs['start'].encode(keyfield.encoding)
 		if 'stop' in kwargs:
-			kwargs['stop'] = kwargs['stop'].encode('utf-8')
+			kwargs['stop'] = kwargs['stop'].encode(keyfield.encoding)
 
 		if kwargs.get('include_value', True):
 			with cls.db.iterator(**kwargs) as it:
 				for key, data in it:
-					yield cls.parse(key.decode('utf-8'), data)
+					yield cls.parse(key.decode(keyfield.encoding), data)
 		else:
 			with cls.db.iterator(**kwargs) as it:
 				for key in it:
-					yield key.decode('utf-8')
+					yield key.decode(keyfield.encoding)
 
 def db_base_model(db: plyvel.DB) -> Type[BaseModel]:
 	def __init_subclass__(cls):
