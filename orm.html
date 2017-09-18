@@ -163,6 +163,8 @@
 <dt id="levelorm.orm.BaseModel">
 <em class="property">class </em><code class="descclassname">levelorm.orm.</code><code class="descname">BaseModel</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L44"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>base model for <code class="docutils literal"><span class="pre">DBBaseModel</span></code> to inherit from.
+user models should inherit from a class created by <a class="reference internal" href="levelorm.html#levelorm.db_base_model" title="levelorm.db_base_model"><code class="xref py py-meth docutils literal"><span class="pre">levelorm.db_base_model()</span></code></a></p>
 <dl class="attribute">
 <dt id="levelorm.orm.BaseModel.db">
 <code class="descname">db</code><em class="property"> = None</em><a class="headerlink" href="#levelorm.orm.BaseModel.db" title="Permalink to this definition">¶</a></dt>
@@ -170,18 +172,22 @@
 
 <dl class="classmethod">
 <dt id="levelorm.orm.BaseModel.get">
-<em class="property">classmethod </em><code class="descname">get</code><span class="sig-paren">(</span><em>key: str</em><span class="sig-paren">)</span> &#x2192; Model<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L101"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">classmethod </em><code class="descname">get</code><span class="sig-paren">(</span><em>key: str</em><span class="sig-paren">)</span> &#x2192; Model<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L110"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>return an instance of the model by querying <a class="reference internal" href="#levelorm.orm.BaseModel.db" title="levelorm.orm.BaseModel.db"><code class="xref py py-attr docutils literal"><span class="pre">db</span></code></a> and parsing the result</p>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="levelorm.orm.BaseModel.iter">
-<em class="property">classmethod </em><code class="descname">iter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span> &#x2192; typing.Iterator[typing.Union[~Model, str]]<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L126"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">classmethod </em><code class="descname">iter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span> &#x2192; typing.Iterator[typing.Union[~Model, str]]<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L137"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>proxies to <a class="reference external" href="https://plyvel.readthedocs.io/en/latest/api.html#iterator">plyvel.DB.iterator</a>
+but yields <code class="docutils literal"><span class="pre">(str,</span> <span class="pre">BaseModel)</span></code> pairs instead of <code class="docutils literal"><span class="pre">(bytes,</span> <span class="pre">bytes)</span></code></p>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="levelorm.orm.BaseModel.parse">
-<em class="property">classmethod </em><code class="descname">parse</code><span class="sig-paren">(</span><em>key: str</em>, <em>data: bytes</em><span class="sig-paren">)</span> &#x2192; Model<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L109"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.parse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">classmethod </em><code class="descname">parse</code><span class="sig-paren">(</span><em>key: str</em>, <em>data: bytes</em><span class="sig-paren">)</span> &#x2192; Model<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L119"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>used internally by <a class="reference internal" href="#levelorm.orm.BaseModel.get" title="levelorm.orm.BaseModel.get"><code class="xref py py-meth docutils literal"><span class="pre">get()</span></code></a> and <a class="reference internal" href="#levelorm.orm.BaseModel.iter" title="levelorm.orm.BaseModel.iter"><code class="xref py py-meth docutils literal"><span class="pre">iter()</span></code></a> to deserialize values</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="levelorm.orm.BaseModel.prefix">
@@ -190,8 +196,10 @@
 
 <dl class="method">
 <dt id="levelorm.orm.BaseModel.save">
-<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L67"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.save" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L72"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.orm.BaseModel.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>writes this instance to the <a class="reference internal" href="#levelorm.orm.BaseModel.db" title="levelorm.orm.BaseModel.db"><code class="xref py py-attr docutils literal"><span class="pre">db</span></code></a>.
+members are serialized in the order they are defined on the model and are 4-byte aligned</p>
+</dd></dl>
 
 </dd></dl>
 

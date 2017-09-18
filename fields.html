@@ -178,6 +178,9 @@
 <dt id="levelorm.fields.String">
 <em class="property">class </em><code class="descclassname">levelorm.fields.</code><code class="descname">String</code><span class="sig-paren">(</span><em>encoding: str = 'utf-8'</em>, <em>key=False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L17"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.String" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#levelorm.fields.BaseField" title="levelorm.fields.BaseField"><code class="xref py py-class docutils literal"><span class="pre">levelorm.fields.BaseField</span></code></a></p>
+<p>represents a <code class="xref py py-class docutils literal"><span class="pre">str</span></code>. stored as an unsigned 4-byte length and encoded bytes</p>
+<p>every model must have exactly one <a class="reference internal" href="#levelorm.fields.String" title="levelorm.fields.String"><code class="xref py py-class docutils literal"><span class="pre">String</span></code></a> with <code class="docutils literal"><span class="pre">key=True</span></code> which will
+not be included in the value and instead used as the key</p>
 <dl class="attribute">
 <dt id="levelorm.fields.String.length_struct">
 <code class="descname">length_struct</code><em class="property"> = &lt;Struct object&gt;</em><a class="headerlink" href="#levelorm.fields.String.length_struct" title="Permalink to this definition">¶</a></dt>
@@ -185,20 +188,22 @@
 
 <dl class="method">
 <dt id="levelorm.fields.String.serialize">
-<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L24"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.String.serialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L31"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.String.serialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="levelorm.fields.String.deserialize">
-<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; str<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.String.deserialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; str<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L35"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.String.deserialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="levelorm.fields.Boolean">
-<em class="property">class </em><code class="descclassname">levelorm.fields.</code><code class="descname">Boolean</code><span class="sig-paren">(</span><em>key: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L33"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Boolean" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">levelorm.fields.</code><code class="descname">Boolean</code><span class="sig-paren">(</span><em>key: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L40"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Boolean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#levelorm.fields.BaseField" title="levelorm.fields.BaseField"><code class="xref py py-class docutils literal"><span class="pre">levelorm.fields.BaseField</span></code></a></p>
+<p>represents a <code class="xref py py-class docutils literal"><span class="pre">bool</span></code>.
+stored as 1 byte (but <a class="reference internal" href="orm.html#levelorm.orm.BaseModel.save" title="levelorm.orm.BaseModel.save"><code class="xref py py-meth docutils literal"><span class="pre">levelorm.orm.BaseModel.save()</span></code></a> will pad to 4)</p>
 <dl class="attribute">
 <dt id="levelorm.fields.Boolean.struct">
 <code class="descname">struct</code><em class="property"> = &lt;Struct object&gt;</em><a class="headerlink" href="#levelorm.fields.Boolean.struct" title="Permalink to this definition">¶</a></dt>
@@ -206,20 +211,22 @@
 
 <dl class="method">
 <dt id="levelorm.fields.Boolean.serialize">
-<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value: bool</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L36"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Boolean.serialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value: bool</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L48"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Boolean.serialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="levelorm.fields.Boolean.deserialize">
-<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L39"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Boolean.deserialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L51"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Boolean.deserialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="levelorm.fields.Integer">
-<em class="property">class </em><code class="descclassname">levelorm.fields.</code><code class="descname">Integer</code><span class="sig-paren">(</span><em>key: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L42"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Integer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">levelorm.fields.</code><code class="descname">Integer</code><span class="sig-paren">(</span><em>key: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L54"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Integer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#levelorm.fields.BaseField" title="levelorm.fields.BaseField"><code class="xref py py-class docutils literal"><span class="pre">levelorm.fields.BaseField</span></code></a></p>
+<p>represents an <code class="xref py py-class docutils literal"><span class="pre">int</span></code>.
+stored as a signed 4-byte int</p>
 <dl class="attribute">
 <dt id="levelorm.fields.Integer.struct">
 <code class="descname">struct</code><em class="property"> = &lt;Struct object&gt;</em><a class="headerlink" href="#levelorm.fields.Integer.struct" title="Permalink to this definition">¶</a></dt>
@@ -227,20 +234,30 @@
 
 <dl class="method">
 <dt id="levelorm.fields.Integer.serialize">
-<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value: int</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L45"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Integer.serialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value: int</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L62"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Integer.serialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="levelorm.fields.Integer.deserialize">
-<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; int<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L48"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Integer.deserialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; int<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L65"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Integer.deserialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="levelorm.fields.Array">
-<em class="property">class </em><code class="descclassname">levelorm.fields.</code><code class="descname">Array</code><span class="sig-paren">(</span><em>inner: levelorm.fields.BaseField</em>, <em>key=False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L51"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Array" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">levelorm.fields.</code><code class="descname">Array</code><span class="sig-paren">(</span><em>inner: levelorm.fields.BaseField</em>, <em>key=False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L68"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#levelorm.fields.BaseField" title="levelorm.fields.BaseField"><code class="xref py py-class docutils literal"><span class="pre">levelorm.fields.BaseField</span></code></a></p>
+<p>represents a <code class="xref py py-class docutils literal"><span class="pre">list</span></code>.
+stored as an unsigned 4-byte length and however the inner class is serialized</p>
+<p>usage example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Matrices</span><span class="p">(</span><span class="n">DBBaseModel</span><span class="p">):</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;matrix&#39;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">numbers</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="n">Array</span><span class="p">(</span><span class="n">Integer</span><span class="p">()))</span>
+<span class="n">identity</span> <span class="o">=</span> <span class="n">Matrices</span><span class="p">(</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="levelorm.fields.Array.length_struct">
 <code class="descname">length_struct</code><em class="property"> = &lt;Struct object&gt;</em><a class="headerlink" href="#levelorm.fields.Array.length_struct" title="Permalink to this definition">¶</a></dt>
@@ -248,12 +265,12 @@
 
 <dl class="method">
 <dt id="levelorm.fields.Array.serialize">
-<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value: list</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L60"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Array.serialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>buf</em>, <em>value: list</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L90"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Array.serialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="levelorm.fields.Array.deserialize">
-<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; list<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L65"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Array.deserialize" title="Permalink to this definition">¶</a></dt>
+<code class="descname">deserialize</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span> &#x2192; list<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/fields.py#L95"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.fields.Array.deserialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

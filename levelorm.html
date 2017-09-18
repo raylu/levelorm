@@ -161,8 +161,10 @@
 <span id="levelorm"></span><h1>levelorm<a class="headerlink" href="#module-levelorm" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="levelorm.db_base_model">
-<code class="descclassname">levelorm.</code><code class="descname">db_base_model</code><span class="sig-paren">(</span><em>db: plyvel._plyvel.DB</em><span class="sig-paren">)</span> &#x2192; typing.Type[levelorm.orm.BaseModel]<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L143"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.db_base_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">levelorm.</code><code class="descname">db_base_model</code><span class="sig-paren">(</span><em>db: plyvel._plyvel.DB</em><span class="sig-paren">)</span> &#x2192; typing.Type[levelorm.orm.BaseModel]<a class="reference external" href="https://github.com/raylu/levelorm/blob/master/levelorm/orm.py#L158"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#levelorm.db_base_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a base model class that all user models should inherit from.
+the returned base class holds a reference to the <code class="docutils literal"><span class="pre">plyvel.DB</span></code></p>
+</dd></dl>
 
 </div>
 
