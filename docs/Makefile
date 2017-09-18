@@ -19,17 +19,19 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+.ONESHELL:
 gh-pages:
 	# check for clean working tree and index
 	git diff --quiet --exit-code
 	git diff --quiet --cached --exit-code
 	# build
 	make html
-	tar cf ../docs.tar _build/html
+	tar cf /tmp/levelorm_docs.tar _build/html
 	# prepare
 	cd ..
 	git checkout gh-pages
 	rm -r *.html *.inv _sources _static
-	tar xf docs.tar --strip-components=2
-	rm docs.tar
+	tar xf /tmp/levelorm_docs.tar --strip-components=2
+	rm /tmp/levelorm_docs.tar
+	git checkout - .gitignore
 	git add .
