@@ -5,10 +5,9 @@ a python 3.6+ ORM for [leveldb](http://leveldb.org) using [plyvel](https://plyve
 ## basic usage
 
 ```python
-import plyvel
-
 import levelorm
 from levelorm.fields import String, Boolean
+import plyvel
 
 db = plyvel.DB('demodb', create_if_missing=True)
 DBBaseModel = levelorm.db_base_model(db)
