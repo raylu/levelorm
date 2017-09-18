@@ -15,11 +15,11 @@ DBBaseModel = levelorm.db_base_model(db)
 class Animal(DBBaseModel):
     prefix = 'animal'
     name = String(key=True)
-    otomotopeia = String()
+    onomatopoeia = String()
     shouts = Boolean()
 
     def say(self):
-        output = self.otomotopeia
+        output = self.onomatopoeia
         if self.shouts:
             output = output.upper()
         return output
@@ -32,5 +32,5 @@ print(list(Animal.iter()))
 ```
 ```
 cow says MOO
-[Animal(name='cow', otomotopeia='moo', shouts=True)]
+[Animal(name='cow', onomatopoeia='moo', shouts=True)]
 ```

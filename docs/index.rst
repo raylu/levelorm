@@ -16,11 +16,11 @@ using `plyvel <https://plyvel.readthedocs.io/>`_ ::
     class Animal(DBBaseModel):
         prefix = 'animal'
         name = String(key=True)
-        otomotopeia = String()
+        onomatopoeia = String()
         shouts = Boolean()
 
         def say(self):
-            output = self.otomotopeia
+            output = self.onomatopoeia
             if self.shouts:
                 output = output.upper()
             return output
@@ -34,7 +34,7 @@ using `plyvel <https://plyvel.readthedocs.io/>`_ ::
 this outputs::
 
     cow says MOO
-    [Animal(name='cow', otomotopeia='moo', shouts=True)]
+    [Animal(name='cow', onomatopoeia='moo', shouts=True)]
 
 .. toctree::
     :maxdepth: 2

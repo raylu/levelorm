@@ -20,7 +20,7 @@ def tearDownModule():
 class Animal(DBBaseModel):
 	prefix = 'animal'
 	name = String(key=True)
-	otomotopeia = String()
+	onomatopoeia = String()
 	shouts = Boolean()
 
 class Numbers(DBBaseModel):
@@ -44,7 +44,7 @@ class TestLevelORM(unittest.TestCase):
 		before.save()
 		after = Animal.get('cow')
 		assert before.name == after.name == 'cow'
-		assert before.otomotopeia == after.otomotopeia == 'moo'
+		assert before.onomatopoeia == after.onomatopoeia == 'moo'
 		assert before.shouts == after.shouts == True
 
 		dog = Animal('dog', 'woof', False)
@@ -62,7 +62,7 @@ class TestLevelORM(unittest.TestCase):
 
 	def test_str(self):
 		a = Animal('sheep', 'baa', False)
-		assert str(a) == "Animal(name='sheep', otomotopeia='baa', shouts=False)"
+		assert str(a) == "Animal(name='sheep', onomatopoeia='baa', shouts=False)"
 
 	def test_eq(self):
 		a = Animal('dog', 'woof', False)
