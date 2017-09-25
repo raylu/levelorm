@@ -78,6 +78,7 @@ class TestLevelORM(BaseTest):
 	def test_eq(self):
 		a = Animal('dog', 'woof', False)
 		assert a != 1
+		assert a != Animal('dog', 'woof', True)
 
 	def test_array(self):
 		fib = Numbers('fibonacci', [1, 1, 2, 3, 5, 8])
@@ -106,7 +107,7 @@ class TestLevelORM(BaseTest):
 		犬 = JISAnimal('犬', 'わんわん')
 		犬.save()
 		assert JISAnimal.get('犬') == 犬
-		animals = list(JISAnimal.iter(start='犬'))
+		animals = list(JISAnimal.iter(start='犬', stop='犬犬'))
 		assert len(animals) == 1
 		assert animals[0] == 犬
 
@@ -140,3 +141,11 @@ class TestLevelORM(BaseTest):
 		with self.assert_raises(InvalidModel):
 			class NoPrefix(DBBaseModel):
 				key = String(key=True)
+
+	def test_invalid_init(self):
+		with self.assert_raises(TypeError):
+			Animal()
+		with self.assert_raises(TypeError):
+			Animal(1, 2, 3, 4)
+		with self.assert_raises(TypeError):
+			Animal('cow', 'moo', not_shouts=True)
