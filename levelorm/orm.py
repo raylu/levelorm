@@ -5,6 +5,7 @@ from typing import Iterator, List, Type, TypeVar, Union
 import plyvel
 
 from . import fields
+from .exceptions import InvalidModel
 
 class ModelMeta(type):
 	@classmethod
@@ -28,12 +29,12 @@ class ModelMeta(type):
 				all_fields.append(name)
 				if field.key:
 					if keyname is not None:
-						raise Exception('%s has multiple keys; %r and %r' % (clsname, keyname, name))
+						raise InvalidModel('%s has multiple keys; %r and %r' % (clsname, keyname, name))
 					if not isinstance(field, fields.String) and not isinstance(field, fields.Blob):
-						raise Exception('keys must be Strings but %s is %s' % (name, field.__class__))
+						raise InvalidModel('keys must be Strings but %s is %s' % (name, field.__class__))
 					keyname = name
 			if keyname is None:
-				raise Exception('%s has no key' % clsname)
+				raise InvalidModel('%s has no key' % clsname)
 
 			result._fields = tuple(all_fields)
 			result._keyname = keyname
@@ -162,7 +163,7 @@ def db_base_model(db: plyvel.DB) -> Type[BaseModel]:
 	'''
 	def __init_subclass__(cls):
 		if not cls.prefix:
-			raise Exception('models must have prefixes')
+			raise InvalidModel('models must have prefixes')
 		cls.db = db.prefixed_db(('%s-' % cls.prefix).encode('utf-8'))
 	base_model = type('DBBaseModel', (BaseModel,), {'__init_subclass__': __init_subclass__})
 	return base_model

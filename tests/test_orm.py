@@ -3,12 +3,13 @@
 from os import path
 import shutil
 import typing
-import unittest
 
 import plyvel
 
 import levelorm
 from levelorm.fields import String, Blob, Boolean, Integer, Array
+from levelorm.orm import InvalidModel
+from .base import BaseTest
 
 dbpath = path.join(path.dirname(path.abspath(__file__)), 'testdb')
 db = plyvel.DB(dbpath, create_if_missing=True)
@@ -48,7 +49,7 @@ class RawData(DBBaseModel):
 	key = Blob(key=True)
 	data = Blob()
 
-class TestLevelORM(unittest.TestCase):
+class TestLevelORM(BaseTest):
 	def test_basic(self):
 		before = Animal('cow', 'moo', shouts=True)
 		before.save()
@@ -116,3 +117,26 @@ class TestLevelORM(unittest.TestCase):
 		data = list(RawData.iter())
 		assert len(data) == 1
 		assert data[0] == deadbeef
+
+	def test_invalid_model(self):
+		# pylint: disable=unused-variable
+
+		with self.assert_raises(InvalidModel):
+			class NoKey(DBBaseModel):
+				prefix = 'nokey'
+				not_a_key = String()
+
+		with self.assert_raises(InvalidModel):
+			class MultiKey(DBBaseModel):
+				prefix = 'multikey'
+				key1 = String(key=True)
+				key2 = Blob(key=True)
+
+		with self.assert_raises(InvalidModel):
+			class IntKey(DBBaseModel):
+				prefix = 'intkey'
+				key = Integer(key=True)
+
+		with self.assert_raises(InvalidModel):
+			class NoPrefix(DBBaseModel):
+				key = String(key=True)

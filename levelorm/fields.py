@@ -2,6 +2,8 @@ import abc
 import struct
 from typing import BinaryIO
 
+from .exceptions import InvalidModel
+
 # pylint: disable=abstract-method
 
 class BaseField(metaclass=abc.ABCMeta):
@@ -117,7 +119,7 @@ class Array(BaseField):
 
 	def __init__(self, inner: BaseField, key=False) -> None:
 		if not isinstance(inner, BaseField):
-			raise Exception('Array inner type is not a field: %r' % (inner))
+			raise InvalidModel('Array inner type is not a field: %r' % (inner))
 		self.inner = inner
 		super().__init__(key)
 

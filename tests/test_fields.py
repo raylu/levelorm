@@ -1,12 +1,16 @@
-import contextlib
 import io
 import struct
-import unittest
 
 from levelorm import fields
+from levelorm.orm import InvalidModel
+from .base import BaseTest
 
-class TestFields(unittest.TestCase):
+class TestFields(BaseTest):
 	def test_invalid(self):
+		with self.assert_raises(InvalidModel):
+			fields.Array(fields.String)
+
+	def test_invalid_value(self):
 		buf = io.BytesIO()
 
 		str_field = fields.String()
@@ -51,13 +55,3 @@ class TestFields(unittest.TestCase):
 				return 2**32 + 1
 		with self.assert_raises(struct.error):
 			blob_field.serialize(buf, LongBytes())
-
-	@contextlib.contextmanager
-	def assert_raises(self, exc_type):
-		try:
-			yield
-		except Exception as e:
-			if not isinstance(e, exc_type):
-				raise
-		else:
-			self.fail('expected %s' % exc_type.__name__)
