@@ -71,6 +71,11 @@ class TestLevelORM(BaseTest):
 		dog_after = list(Animal.iter(start='dog'))[0]
 		assert dog == dog_after
 
+		dog.delete()
+		assert Animal.get('dog') is None
+
+		Animal('duck', 'quack', True).delete()
+
 	def test_str(self):
 		a = Animal('sheep', 'baa', False)
 		assert str(a) == "Animal(name='sheep', onomatopoeia='baa', shouts=False)"

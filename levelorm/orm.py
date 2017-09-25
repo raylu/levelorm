@@ -92,6 +92,11 @@ class BaseModel(metaclass=ModelMeta):
 		keyfield = getattr(self.__class__, self._keyname)
 		self.db.put(keyfield.serialize_key(self._key), buf.getvalue())
 
+	def delete(self) -> None:
+		''' deletes this instance from the :attr:`db`. no error is raised if the key was not found '''
+		keyfield = getattr(self.__class__, self._keyname)
+		self.db.delete(keyfield.serialize_key(self._key))
+
 	def __repr__(self) -> str:
 		args = []
 		for fieldname in self._fields:
