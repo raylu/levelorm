@@ -2,7 +2,14 @@ import abc
 import struct
 from typing import BinaryIO
 
+# pylint: disable=abstract-method
+
 class BaseField(metaclass=abc.ABCMeta):
+	'''
+	every model must have exactly one :class:`String` or :class:`Blob` with ``key=True`` which will
+	not be included in the value and instead used as the key
+	'''
+
 	def __init__(self, key: bool = False) -> None:
 		self.key = key
 
@@ -14,13 +21,14 @@ class BaseField(metaclass=abc.ABCMeta):
 	def deserialize(self, buf: BinaryIO):
 		raise NotImplementedError
 
-class String(BaseField):
-	'''
-	represents a :class:`str`. stored as an unsigned 4-byte length and encoded bytes
+	def serialize_key(self, value) -> bytes:
+		raise NotImplementedError
 
-	every model must have exactly one :class:`String` with ``key=True`` which will
-	not be included in the value and instead used as the key
-	'''
+	def deserialize_key(self, value: bytes):
+		raise NotImplementedError
+
+class String(BaseField):
+	''' represents a :class:`str`. stored as an unsigned 4-byte length and encoded bytes '''
 
 	length_struct = struct.Struct('I')
 
@@ -37,6 +45,12 @@ class String(BaseField):
 		b = buf.read(length)
 		return b.decode(self.encoding)
 
+	def serialize_key(self, value: str):
+		return value.encode(self.encoding)
+
+	def deserialize_key(self, value) -> str:
+		return value.decode(self.encoding)
+
 class Blob(BaseField):
 	''' represents a :class:`bytes`. stored as an unsigned 4-byte length and bytes '''
 
@@ -48,6 +62,12 @@ class Blob(BaseField):
 	def deserialize(self, buf) -> str:
 		length = self.length_struct.unpack(buf.read(self.length_struct.size))[0]
 		return buf.read(length)
+
+	def serialize_key(self, value: bytes):
+		return value
+
+	def deserialize_key(self, value) -> bytes:
+		return value
 
 class Boolean(BaseField):
 	'''

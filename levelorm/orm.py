@@ -29,8 +29,8 @@ class ModelMeta(type):
 				if field.key:
 					if keyname is not None:
 						raise Exception('%s has multiple keys; %r and %r' % (clsname, keyname, name))
-					if not isinstance(field, fields.String):
-						raise Exception('keys must be Strings bug %s is %s' % (name, field.__class__))
+					if not isinstance(field, fields.String) and not isinstance(field, fields.Blob):
+						raise Exception('keys must be Strings but %s is %s' % (name, field.__class__))
 					keyname = name
 			if keyname is None:
 				raise Exception('%s has no key' % clsname)
@@ -89,7 +89,7 @@ class BaseModel(metaclass=ModelMeta):
 				buf.write(b'\0' * padding)
 
 		keyfield = getattr(self.__class__, self._keyname)
-		self.db.put(self._key.encode(keyfield.encoding), buf.getvalue())
+		self.db.put(keyfield.serialize_key(self._key), buf.getvalue())
 
 	def __repr__(self) -> str:
 		args = []
@@ -108,16 +108,16 @@ class BaseModel(metaclass=ModelMeta):
 		return True
 
 	@classmethod
-	def get(cls: Type[Model], key: str) -> Model:
+	def get(cls: Type[Model], key: Union[str, bytes]) -> Model:
 		''' return an instance of the model by querying :attr:`db` and parsing the result '''
 		keyfield = getattr(cls, cls._keyname)
-		data = cls.db.get(key.encode(keyfield.encoding))
+		data = cls.db.get(keyfield.serialize_key(key))
 		if data is None:
 			return None
 		return cls.parse(key, data)
 
 	@classmethod
-	def parse(cls: Type[Model], key: str, data: bytes) -> Model:
+	def parse(cls: Type[Model], key: Union[str, bytes], data: bytes) -> Model:
 		''' used internally by :meth:`get` and :meth:`iter` to deserialize values '''
 		buf = io.BytesIO(data)
 		kwargs = {cls._keyname: key}
@@ -142,18 +142,18 @@ class BaseModel(metaclass=ModelMeta):
 		'''
 		keyfield = getattr(cls, cls._keyname)
 		if 'start' in kwargs:
-			kwargs['start'] = kwargs['start'].encode(keyfield.encoding)
+			kwargs['start'] = keyfield.serialize_key(kwargs['start'])
 		if 'stop' in kwargs:
-			kwargs['stop'] = kwargs['stop'].encode(keyfield.encoding)
+			kwargs['stop'] = keyfield.serialize_key(kwargs['stop'])
 
 		if kwargs.get('include_value', True):
 			with cls.db.iterator(**kwargs) as it:
 				for key, data in it:
-					yield cls.parse(key.decode(keyfield.encoding), data)
+					yield cls.parse(keyfield.deserialize_key(key), data)
 		else:
 			with cls.db.iterator(**kwargs) as it:
 				for key in it:
-					yield key.decode(keyfield.encoding)
+					yield keyfield.deserialize_key(key)
 
 def db_base_model(db: plyvel.DB) -> Type[BaseModel]:
 	'''

@@ -45,7 +45,7 @@ class TodoList(DBBaseModel):
 
 class RawData(DBBaseModel):
 	prefix = 'raw'
-	name = String(key=True)
+	key = Blob(key=True)
 	data = Blob()
 
 class TestLevelORM(unittest.TestCase):
@@ -110,6 +110,9 @@ class TestLevelORM(unittest.TestCase):
 		assert animals[0] == 犬
 
 	def test_blob(self):
-		deadbeef = RawData('deadbeef', b'\xde\xad\xbe\xef')
+		deadbeef = RawData(b'\xde\xad\xbe\xef', b'deadbeef')
 		deadbeef.save()
-		assert RawData.get('deadbeef') == deadbeef
+		assert RawData.get(b'\xde\xad\xbe\xef') == deadbeef
+		data = list(RawData.iter())
+		assert len(data) == 1
+		assert data[0] == deadbeef
