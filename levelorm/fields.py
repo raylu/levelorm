@@ -46,6 +46,8 @@ class Boolean(BaseField):
 	struct = struct.Struct('?')
 
 	def serialize(self, buf, value: bool):
+		if not isinstance(value, bool):
+			raise TypeError('expected bool, got %r' % value)
 		buf.write(self.struct.pack(value))
 
 	def deserialize(self, buf) -> bool:
@@ -88,6 +90,8 @@ class Array(BaseField):
 		super().__init__(key)
 
 	def serialize(self, buf, value: list):
+		if not isinstance(value, list):
+			raise TypeError('expected list, got %r' % value)
 		buf.write(self.length_struct.pack(len(value)))
 		for element in value:
 			self.inner.serialize(buf, element)
