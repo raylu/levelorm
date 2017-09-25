@@ -42,6 +42,7 @@ this outputs::
    levelorm
    orm
    fields
+   exceptions
 
 indices and tables
 ==================
