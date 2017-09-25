@@ -37,6 +37,18 @@ class String(BaseField):
 		b = buf.read(length)
 		return b.decode(self.encoding)
 
+class Blob(BaseField):
+	''' represents a :class:`bytes`. stored as an unsigned 4-byte length and bytes '''
+
+	length_struct = struct.Struct('I')
+
+	def serialize(self, buf, value):
+		buf.write(self.length_struct.pack(len(value)) + value)
+
+	def deserialize(self, buf) -> str:
+		length = self.length_struct.unpack(buf.read(self.length_struct.size))[0]
+		return buf.read(length)
+
 class Boolean(BaseField):
 	'''
 	represents a :class:`bool`.

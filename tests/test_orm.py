@@ -8,7 +8,7 @@ import unittest
 import plyvel
 
 import levelorm
-from levelorm.fields import String, Boolean, Integer, Array
+from levelorm.fields import String, Blob, Boolean, Integer, Array
 
 dbpath = path.join(path.dirname(path.abspath(__file__)), 'testdb')
 db = plyvel.DB(dbpath, create_if_missing=True)
@@ -42,6 +42,11 @@ class TodoList(DBBaseModel):
 	prefix = 'todo'
 	name = String(key=True)
 	numbers = Array(String())
+
+class RawData(DBBaseModel):
+	prefix = 'raw'
+	name = String(key=True)
+	data = Blob()
 
 class TestLevelORM(unittest.TestCase):
 	def test_basic(self):
@@ -103,3 +108,8 @@ class TestLevelORM(unittest.TestCase):
 		animals = list(JISAnimal.iter(start='犬'))
 		assert len(animals) == 1
 		assert animals[0] == 犬
+
+	def test_blob(self):
+		deadbeef = RawData('deadbeef', b'\xde\xad\xbe\xef')
+		deadbeef.save()
+		assert RawData.get('deadbeef') == deadbeef

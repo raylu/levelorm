@@ -13,6 +13,10 @@ class TestFields(unittest.TestCase):
 		with self.assert_raises(AttributeError):
 			str_field.serialize(buf, b'hi')
 
+		blob_field = fields.Blob()
+		with self.assert_raises(TypeError):
+			blob_field.serialize(buf, 'hi')
+
 		bool_field = fields.Boolean()
 		with self.assert_raises(TypeError):
 			bool_field.serialize(buf, 2)
@@ -40,6 +44,13 @@ class TestFields(unittest.TestCase):
 				return 2**32 + 1
 		with self.assert_raises(struct.error):
 			str_field.serialize(buf, LongStr())
+
+		blob_field = fields.Blob()
+		class LongBytes:
+			def __len__(self):
+				return 2**32 + 1
+		with self.assert_raises(struct.error):
+			blob_field.serialize(buf, LongBytes())
 
 	@contextlib.contextmanager
 	def assert_raises(self, exc_type):
