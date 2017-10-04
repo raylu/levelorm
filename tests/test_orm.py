@@ -7,7 +7,7 @@ import typing
 import plyvel
 
 import levelorm
-from levelorm.fields import String, Blob, Boolean, Integer, Array
+from levelorm.fields import String, Blob, Boolean, Integer, Array, Float
 from levelorm.orm import InvalidModel
 from .base import BaseTest
 
@@ -23,6 +23,7 @@ class Animal(DBBaseModel):
 	name = String(key=True)
 	onomatopoeia = String()
 	shouts = Boolean()
+	decibels = Float()
 
 class JISAnimal(DBBaseModel):
 	prefix = 'jisanimal'
@@ -51,14 +52,15 @@ class RawData(DBBaseModel):
 
 class TestLevelORM(BaseTest):
 	def test_basic(self):
-		before = Animal('cow', 'moo', shouts=True)
+		before = Animal('cow', 'moo', True, decibels=87.0)
 		before.save()
 		after = Animal.get('cow')
 		assert before.name == after.name == 'cow'
 		assert before.onomatopoeia == after.onomatopoeia == 'moo'
 		assert before.shouts == after.shouts == True
+		assert before.decibels == after.decibels == 87.0
 
-		dog = Animal('dog', 'woof', False)
+		dog = Animal('dog', 'woof', False, 95.0)
 		dog.save()
 		animals = list(Animal.iter())
 		assert len(animals) == 2
@@ -74,16 +76,16 @@ class TestLevelORM(BaseTest):
 		dog.delete()
 		assert Animal.get('dog') is None
 
-		Animal('duck', 'quack', True).delete()
+		Animal('duck', 'quack', True, 55.0).delete()
 
 	def test_str(self):
-		a = Animal('sheep', 'baa', False)
-		assert str(a) == "Animal(name='sheep', onomatopoeia='baa', shouts=False)"
+		a = Animal('sheep', 'baa', False, 87.0)
+		assert str(a) == "Animal(name='sheep', onomatopoeia='baa', shouts=False, decibels=87.0)"
 
 	def test_eq(self):
-		a = Animal('dog', 'woof', False)
+		a = Animal('dog', 'woof', False, 95.0)
 		assert a != 1
-		assert a != Animal('dog', 'woof', True)
+		assert a != Animal('dog', 'woof', True, 95.0)
 
 	def test_array(self):
 		fib = Numbers('fibonacci', [1, 1, 2, 3, 5, 8])
@@ -105,7 +107,7 @@ class TestLevelORM(BaseTest):
 		assert TodoList.get('1') == todo1
 
 	def test_unicode(self):
-		牛 = Animal('牛', 'もーもー', shouts=False)
+		牛 = Animal('牛', 'もーもー', shouts=False, decibels=87.0)
 		牛.save()
 		assert Animal.get('牛') == 牛
 
@@ -151,6 +153,6 @@ class TestLevelORM(BaseTest):
 		with self.assert_raises(TypeError):
 			Animal()
 		with self.assert_raises(TypeError):
-			Animal(1, 2, 3, 4)
+			Animal(1, 2, 3, 4, 5)
 		with self.assert_raises(TypeError):
-			Animal('cow', 'moo', not_shouts=True)
+			Animal('cow', 'moo', not_shouts=True, intensity=5.0)
