@@ -29,6 +29,10 @@ class TestFields(BaseTest):
 		with self.assert_raises(struct.error):
 			int_field.serialize(buf, '0')
 
+		float_field = fields.Float()
+		with self.assert_raises(struct.error):
+			float_field.serialize(buf, '1.0')
+
 		array_field = fields.Array(fields.String())
 		with self.assert_raises(TypeError):
 			array_field.serialize(buf, 'hi')

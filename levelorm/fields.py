@@ -101,6 +101,20 @@ class Integer(BaseField):
 	def deserialize(self, buf) -> int:
 		return self.struct.unpack(buf.read(self.struct.size))[0]
 
+class Float(BaseField):
+	'''
+	represents an :class:`float`.
+	stored as a 4-byte float
+	'''
+
+	struct = struct.Struct('f')
+
+	def serialize(self, buf, value: float):
+		buf.write(self.struct.pack(value))
+
+	def deserialize(self, buf) -> float:
+		return self.struct.unpack(buf.read(self.struct.size))[0]
+
 class Array(BaseField):
 	'''
 	represents a :class:`list`.
