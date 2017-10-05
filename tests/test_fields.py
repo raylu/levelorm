@@ -59,3 +59,11 @@ class TestFields(BaseTest):
 				return 2**32 + 1
 		with self.assert_raises(struct.error):
 			blob_field.serialize(buf, LongBytes())
+
+	def test_range(self):
+		buf = io.BytesIO()
+		f = 2**128 + 1.0 # the maximum representable binary32 is about 2**128
+		float_field = fields.Float()
+		float_field.serialize(buf, f)
+		buf.seek(0)
+		assert float_field.deserialize(buf) == f

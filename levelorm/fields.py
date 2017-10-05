@@ -103,11 +103,11 @@ class Integer(BaseField):
 
 class Float(BaseField):
 	'''
-	represents an :class:`float`.
-	stored as a 4-byte float
+	represents a :class:`float`.
+	stored as a double precision (8 byte, binary64) float
 	'''
 
-	struct = struct.Struct('f')
+	struct = struct.Struct('d')
 
 	def serialize(self, buf, value: float):
 		buf.write(self.struct.pack(value))
