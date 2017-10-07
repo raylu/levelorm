@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='levelorm',
-		version='0.1',
+		version='0.2',
 		description='python3.6+ ORM for leveldb using plyvel',
 		url='http://github.com/raylu/levelorm',
 		author='raylu',
