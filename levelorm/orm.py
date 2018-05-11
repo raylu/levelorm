@@ -49,7 +49,7 @@ class BaseModel(metaclass=ModelMeta):
 	'''
 
 	db: plyvel.DB = None
-	prefix: str = None
+	prefix: Union[str, None] = None
 
 	_keyname: str
 	_fields: List[str]
@@ -114,7 +114,7 @@ class BaseModel(metaclass=ModelMeta):
 		return True
 
 	@classmethod
-	def get(cls: Type[Model], key: Union[str, bytes]) -> Model:
+	def get(cls: Type[Model], key: Union[str, bytes]) -> Union[Model, None]:
 		''' return an instance of the model by querying :attr:`db` and parsing the result '''
 		keyfield = getattr(cls, cls._keyname)
 		data = cls.db.get(keyfield.serialize_key(key))
